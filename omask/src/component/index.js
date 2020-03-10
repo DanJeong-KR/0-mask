@@ -9,6 +9,7 @@ import {
 } from "react-naver-maps";
 import * as request from "./httpRequest";
 import "./index.scss";
+import { stringify } from "querystring";
 
 export default class Main extends Component {
   constructor(props) {
@@ -51,6 +52,14 @@ export default class Main extends Component {
     // console.log(111, "eee", window.naver.maps.Event);
     console.log("componentDidMount");
     this.getData();
+    this.getCurrentPosition();
+  }
+
+  componentDidUpdate() {
+    console.log("componentDidUpdate");
+  }
+
+  getCurrentPosition() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         position => {
@@ -82,17 +91,6 @@ export default class Main extends Component {
     }
   }
 
-  componentDidUpdate() {
-    console.log("componentDidUpdate");
-  }
-
-  handleInputChange = e => {
-    console.log(111, "handleInputChange");
-    // this.setState({
-    //   [target.name]: e.target.value
-    // });
-  };
-
   dragendListener = e => {
     const { _lat: lat, _lng: lng } = this.mapRef.instance.getCenter();
     this.setState(
@@ -102,10 +100,15 @@ export default class Main extends Component {
           lng
         }
       },
-      () => {
-        this.getData();
-      }
+      this.getData
     );
+  };
+
+  handleInputChange = e => {
+    console.log(111, "handleInputChange", e);
+    // this.setState({
+    //   [target.name]: e.target.value
+    // });
   };
 
   handleSelectChange = e => {
@@ -113,10 +116,12 @@ export default class Main extends Component {
       {
         radius: e.target.value
       },
-      () => {
-        this.getData();
-      }
+      this.getData
     );
+  };
+
+  onClickMyPositionBtn = () => {
+    this.getCurrentPosition();
   };
 
   render() {
@@ -135,8 +140,12 @@ export default class Main extends Component {
             <option value={200}>반경 200m</option>
             <option value={300}>반경 300m</option>
             <option value={400}>반경 400m</option>
-            <option value={500}>반경 500m</option>
+            <option value={500} selected>
+              반경 500m
+            </option>
+            <option value={1000}>반경 1000m</option>
           </select>
+          <button onClick={this.onClickMyPositionBtn}>내 위치</button>
         </div>
 
         <RenderAfterNavermapsLoaded
@@ -163,19 +172,22 @@ export default class Main extends Component {
             center={this.state.center}
             defaultZoom={17} // 지도 초기 확대 배율
           >
+            (
             <Marker
               position={this.state.userCenter}
               clickable={false}
               icon={userCenterIcon}
               zIndex={10}
             />
-
-            <Marker
-              position={this.state.center}
-              clickable={false}
-              icon={centerIcon}
-            />
-
+            )
+            {stringify(this.state.center) !==
+              stringify(this.state.userCenter) && (
+              <Marker
+                position={this.state.center}
+                clickable={false}
+                icon={centerIcon}
+              />
+            )}
             <Circle
               center={this.state.center}
               radius={this.state.radius}
@@ -184,22 +196,23 @@ export default class Main extends Component {
               strokeColor={"#A5E124"}
               clickable={false}
             />
-
             {this.state.storeDatas &&
               this.state.storeDatas.map((element, index) => {
                 const { lat, lng } = element;
                 return (
-                  <Marker
-                    key={index}
-                    position={{
-                      lat,
-                      lng
-                    }}
-                    animation={this.naverMaps.Animation.BOUNCE}
-                    onClick={() => {
-                      alert("약국");
-                    }}
-                  />
+                  <div id="pharmacy">
+                    <Marker
+                      key={index}
+                      position={{
+                        lat,
+                        lng
+                      }}
+                      animation={this.naverMaps.Animation.BOUNCE}
+                      onClick={() => {
+                        alert("약국");
+                      }}
+                    />
+                  </div>
                 );
               })}
           </NaverMap>
