@@ -5,6 +5,7 @@ import {
   Marker,
   Circle
 } from "react-naver-maps";
+import * as request from "./httpRequest";
 
 export default class Main extends Component {
   constructor(props) {
@@ -13,35 +14,45 @@ export default class Main extends Component {
     this.naverMaps = window.naver.maps;
 
     this.state = {
+      searchValue: "",
       center: {
-        lat: 37.42829747263545,
-        lng: 126.76620435615891
+        lat: 37.49792,
+        lng: 127.02757
       },
-      storePositions: [
-        {
-          lat: 37.49409,
-          lng: 127.028903
-        },
-        {
-          lat: 37.493377,
-          lng: 127.030392
-        }
-      ],
+      storeDatas: [],
       radius: 500
     };
   }
 
+  getData = async () => {
+    const { lat, lng } = this.state.center;
+    const res = await request.getStoreData({
+      lat,
+      lng,
+      m: 500
+    });
+    const json = await res.json();
+    this.setState({
+      storeDatas: json.stores
+    });
+    console.log(json);
+  };
+
   componentDidMount() {
     console.log("componentDidMount");
+    this.getData();
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         position => {
-          this.setState({
-            center: {
-              lat: position.coords.latitude,
-              lng: position.coords.longitude
-            }
-          });
+          this.setState(
+            {
+              center: {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+              }
+            },
+            this.getData
+          );
         },
         function(error) {
           console.error(error);
@@ -61,11 +72,28 @@ export default class Main extends Component {
     console.log("componentDidUpdate");
   }
 
+  handleInputChange = e => {
+    console.log(111, "handleInputChange");
+    // this.setState({
+    //   [target.name]: e.target.value
+    // });
+  };
+
   render() {
     console.log(111, "ddd", this.state);
     return (
       <div className="App">
-        {/* <input>dd</input> */}
+        <input
+          type="text"
+          name="searchValue"
+          value={this.state.searchValue}
+          onChange={this.handleInputChange}
+          placeholder="search bar"
+          style={{
+            width: "100%",
+            height: "100px"
+          }}
+        />
         <RenderAfterNavermapsLoaded
           ncpClientId={"fs0aqkdq7k"} // 자신의 네이버 계정에서 발급받은 Client ID
           error={<p>Maps Load Error</p>}
@@ -96,17 +124,22 @@ export default class Main extends Component {
               clickable={false}
             />
 
-            {this.state.storePositions.map((element, index) => {
-              return (
-                <Marker
-                  position={element}
-                  animation={this.naverMaps.Animation.BOUNCE}
-                  onClick={() => {
-                    alert("약국");
-                  }}
-                />
-              );
-            })}
+            {this.state.storeDatas &&
+              this.state.storeDatas.map((element, index) => {
+                const { lat, lng } = element;
+                return (
+                  <Marker
+                    position={{
+                      lat,
+                      lng
+                    }}
+                    animation={this.naverMaps.Animation.BOUNCE}
+                    onClick={() => {
+                      alert("약국");
+                    }}
+                  />
+                );
+              })}
           </NaverMap>
         </RenderAfterNavermapsLoaded>
       </div>
