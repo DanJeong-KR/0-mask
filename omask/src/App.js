@@ -20,7 +20,7 @@ function App() {
 function NaverMapAPI() {
   return (
     <NaverMap
-      mapDivId={"maps-getting-started-uncontrolled"} // default: react-naver-map
+      mapDivId={"react-naver-map"} // default: react-naver-map
       style={{
         width: "100%", // 네이버지도 가로 길이
         height: "85vh" // 네이버지도 세로 길이
