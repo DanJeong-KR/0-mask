@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import userCenterIcon from "../Images/icon.svg";
+import centerIcon from "../Images/move.gif";
 import {
   RenderAfterNavermapsLoaded,
   NaverMap,
@@ -12,10 +14,15 @@ export default class Main extends Component {
     super(props);
 
     this.naverMaps = window.naver.maps;
+    this.mapRef = undefined;
 
     this.state = {
       searchValue: "",
       center: {
+        lat: 37.49792,
+        lng: 127.02757
+      },
+      userCenter: {
         lat: 37.49792,
         lng: 127.02757
       },
@@ -39,6 +46,7 @@ export default class Main extends Component {
   };
 
   componentDidMount() {
+    // console.log(111, "eee", window.naver.maps.Event);
     console.log("componentDidMount");
     this.getData();
     if (navigator.geolocation) {
@@ -46,6 +54,10 @@ export default class Main extends Component {
         position => {
           this.setState(
             {
+              userCenter: {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+              },
               center: {
                 lat: position.coords.latitude,
                 lng: position.coords.longitude
@@ -64,7 +76,7 @@ export default class Main extends Component {
         }
       );
     } else {
-      alert("GPS를 지원하지 않습니다");
+      alert("GPS를 지원하지 않기 때문에 맵을 사용할 수 없습니다.");
     }
   }
 
@@ -77,6 +89,22 @@ export default class Main extends Component {
     // this.setState({
     //   [target.name]: e.target.value
     // });
+  };
+
+  dragendListener = e => {
+    const { _lat: lat, _lng: lng } = e.coord;
+    console.log(111, "drag", lat, lng);
+    this.setState(
+      {
+        center: {
+          lat,
+          lng
+        }
+      },
+      () => {
+        this.getData();
+      }
+    );
   };
 
   render() {
@@ -94,27 +122,44 @@ export default class Main extends Component {
             height: "100px"
           }}
         />
+
         <RenderAfterNavermapsLoaded
           ncpClientId={"fs0aqkdq7k"} // 자신의 네이버 계정에서 발급받은 Client ID
           error={<p>Maps Load Error</p>}
           loading={<p>Maps Loading...</p>}
         >
           <NaverMap
+            naverRef={ref => {
+              if (!this.mapRef) {
+                this.mapRef = ref;
+                window.naver.maps.Event.addListener(
+                  this.mapRef.instance,
+                  "dragend",
+                  this.dragendListener
+                );
+              }
+            }}
             mapDivId={"react-naver-map"} // default: react-naver-map
             style={{
               width: "100%", // 네이버지도 가로 길이
               height: "85vh" // 네이버지도 세로 길이
             }}
             center={this.state.center}
-            defaultZoom={16} // 지도 초기 확대 배율
+            defaultZoom={17} // 지도 초기 확대 배율
           >
             <Marker
-              position={this.state.center}
-              animation={this.naverMaps.Animation.DROP}
-              onClick={() => {
-                alert("현재 위치");
-              }}
+              position={this.state.userCenter}
+              clickable={false}
+              icon={userCenterIcon}
+              zIndex={10}
             />
+
+            <Marker
+              position={this.state.center}
+              clickable={false}
+              icon={centerIcon}
+            />
+
             <Circle
               center={this.state.center}
               radius={this.state.radius}
@@ -129,6 +174,7 @@ export default class Main extends Component {
                 const { lat, lng } = element;
                 return (
                   <Marker
+                    key={index}
                     position={{
                       lat,
                       lng
