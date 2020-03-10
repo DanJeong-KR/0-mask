@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import userCenterIcon from "../Images/icon.svg";
-import centerIcon from "../Images/move.gif";
+import centerIcon from "../Images/focus.svg";
 import goodIcon from "../Images/good.gif";
-import nothingIcon from "../Images/soldout.png";
+import fewIcon from "../Images/few.gif";
+import nothingIcon from "../Images/soldout2.svg";
 
 import {
   RenderAfterNavermapsLoaded,
@@ -21,6 +22,7 @@ export default class Main extends Component {
 
     this.naverMaps = window.naver.maps;
     this.mapRef = undefined;
+    this.infoWindow = undefined;
 
     this.state = {
       searchValue: "",
@@ -108,13 +110,6 @@ export default class Main extends Component {
     );
   };
 
-  handleInputChange = e => {
-    console.log(111, "handleInputChange", e);
-    // this.setState({
-    //   [target.name]: e.target.value
-    // });
-  };
-
   handleSelectChange = e => {
     this.setState(
       {
@@ -128,7 +123,6 @@ export default class Main extends Component {
   };
 
   handleComplete = data => {
-    console.log(111, "data", data);
     let fullAddress = data.address;
     let extraAddress = "";
 
@@ -143,13 +137,76 @@ export default class Main extends Component {
       fullAddress += extraAddress !== "" ? ` (${extraAddress})` : "";
     }
 
-    console.log(111, "ㅃㅃ", fullAddress); // e.g. '서울 성동구 왕십리로2길 20 (성수동1가)'
+    console.log(111, "ㅃㅃ", window.naver.maps.Service); // e.g. '서울 성동구 왕십리로2길 20 (성수동1가)'
+    window.naver.maps.Service.geocode(
+      {
+        query: fullAddress
+      },
+      (status, response) => {
+        if (status !== window.naver.maps.Service.Status.OK) {
+          return alert("검색어를 확인해 주세요!");
+        }
+        let results = response.v2.addresses;
+
+        this.setState(
+          {
+            center: {
+              lat: results[0].y,
+              lng: results[0].x
+            }
+          },
+          this.getData
+        );
+      }
+    );
+  };
+
+  handleMarker = element => {
+    const { lat, lng } = element;
+    if (!this.infoWindow) {
+      this.infoWindow = new window.naver.maps.InfoWindow({
+        position: new window.naver.maps.LatLng(lat + 0.0003, lng),
+        content: `약국 이름 : ${element.name}      주소 : ${element.addr}`,
+        maxWidth: 140,
+        backgroundColor: "#eee",
+        borderColor: "#2db400",
+        borderWidth: 5,
+        anchorSize: new window.naver.maps.Size(10, 10),
+        anchorSkew: true,
+        anchorColor: "#eee",
+
+        pixelOffset: new window.naver.maps.Point(20, -5)
+      });
+    }
+    this.infoWindow.open(this.mapRef.instance);
   };
 
   render() {
     return (
       <div className="App">
         <div className="Header">
+          <div className="description">
+            <div className="description-buttonWrapper">
+              <img src={goodIcon} alt="good" />
+              <p className="Header-button">30개 이상!</p>
+            </div>
+            <div className="description-buttonWrapper">
+              <img src={fewIcon} alt="few" />
+              <p className="Header-button">30개 미만!</p>
+            </div>
+            <div className="description-buttonWrapper">
+              <img src={nothingIcon} alt="nothingIcon" />
+              <p className="Header-button">품절 ㅜ ^ ㅜ</p>
+            </div>
+            <div className="description-buttonWrapper">
+              <img src={userCenterIcon} alt="userCenterIcon" />
+              <p className="Header-button">현재위치</p>
+            </div>
+            <div className="description-buttonWrapper">
+              <img src={centerIcon} alt="centerIcon" />
+              <p className="Header-button">기준 위치 (반경)</p>
+            </div>
+          </div>
           <div className="search">
             <DaumPostcode
               onComplete={this.handleComplete}
@@ -169,7 +226,12 @@ export default class Main extends Component {
             <option value={500}>반경 500m</option>
             <option value={1000}>반경 1000m</option>
           </select>
-          <button onClick={this.onClickMyPositionBtn}>내 위치</button>
+          <div className="buttonWrapper">
+            <img src={centerIcon} width={25} alt="focus" />
+            <p className="Header-button" onClick={this.onClickMyPositionBtn}>
+              내 위치
+            </p>
+          </div>
         </div>
         {/* <div className="mapWrapper"> */}
         <RenderAfterNavermapsLoaded
@@ -195,6 +257,11 @@ export default class Main extends Component {
             }}
             center={this.state.center}
             defaultZoom={17} // 지도 초기 확대 배율
+            onClick={() => {
+              if (this.infoWindow) {
+                this.infoWindow.close();
+              }
+            }}
           >
             <Marker
               position={this.state.userCenter}
@@ -231,6 +298,8 @@ export default class Main extends Component {
                     icon = nothingIcon;
                     break;
                   case "few":
+                    icon = fewIcon;
+                    break;
                   case "some":
                   case "plenty":
                     icon = goodIcon;
@@ -248,11 +317,13 @@ export default class Main extends Component {
                       }}
                       // animation={this.naverMaps.Animation.BOUNCE}
                       icon={icon}
-                      onClick={() => {
-                        alert(
-                          `약국 이름 : ${element.name}\n주소 : ${element.addr}`
-                        );
-                      }}
+                      onClick={
+                        remain_stat !== "empty"
+                          ? () => {
+                              this.handleMarker(element);
+                            }
+                          : undefined
+                      }
                     />
                   </div>
                 );
