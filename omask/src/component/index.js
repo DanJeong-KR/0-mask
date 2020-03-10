@@ -1,5 +1,10 @@
 import React, { Component } from "react";
-import { RenderAfterNavermapsLoaded, NaverMap, Marker } from "react-naver-maps";
+import {
+  RenderAfterNavermapsLoaded,
+  NaverMap,
+  Marker,
+  Circle
+} from "react-naver-maps";
 
 export default class Main extends Component {
   constructor(props) {
@@ -11,7 +16,18 @@ export default class Main extends Component {
       center: {
         lat: 37.42829747263545,
         lng: 126.76620435615891
-      }
+      },
+      storePositions: [
+        {
+          lat: 37.49409,
+          lng: 127.028903
+        },
+        {
+          lat: 37.493377,
+          lng: 127.030392
+        }
+      ],
+      radius: 500
     };
   }
 
@@ -45,12 +61,11 @@ export default class Main extends Component {
     console.log("componentDidUpdate");
   }
 
-  setMap = () => {};
-
   render() {
     console.log(111, "ddd", this.state);
     return (
       <div className="App">
+        {/* <input>dd</input> */}
         <RenderAfterNavermapsLoaded
           ncpClientId={"fs0aqkdq7k"} // 자신의 네이버 계정에서 발급받은 Client ID
           error={<p>Maps Load Error</p>}
@@ -72,6 +87,26 @@ export default class Main extends Component {
                 alert("현재 위치");
               }}
             />
+            <Circle
+              center={this.state.center}
+              radius={this.state.radius}
+              fillOpacity={0.2}
+              fillColor={"#A5E124"}
+              strokeColor={"#A5E124"}
+              clickable={false}
+            />
+
+            {this.state.storePositions.map((element, index) => {
+              return (
+                <Marker
+                  position={element}
+                  animation={this.naverMaps.Animation.BOUNCE}
+                  onClick={() => {
+                    alert("약국");
+                  }}
+                />
+              );
+            })}
           </NaverMap>
         </RenderAfterNavermapsLoaded>
       </div>
