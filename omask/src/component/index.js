@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import * as request from "./httpRequest";
 import { RenderAfterNavermapsLoaded, NaverMap, Marker } from "react-naver-maps";
 
 export default class Main extends Component {
@@ -14,6 +15,16 @@ export default class Main extends Component {
       }
     };
   }
+
+  getData = async () => {
+    const res = await request.getStoreData({
+      lat: 37.498652, //위도
+      lng: 127.027818, //경도
+      m: 1000 //반경
+    });
+    const json = await res.json();
+    console.log(json);
+  };
 
   componentDidMount() {
     console.log("componentDidMount");
