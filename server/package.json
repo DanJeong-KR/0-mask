@@ -1,0 +1,37 @@
+{
+  "name": "0mask",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/plugin-proposal-class-properties": "^7.2.3",
+    "@babel/plugin-proposal-object-rest-spread": "^7.2.0",
+    "@babel/plugin-transform-arrow-functions": "^7.2.0",
+    "@babel/plugin-transform-classes": "^7.2.2",
+    "@babel/plugin-transform-destructuring": "^7.2.0",
+    "@babel/plugin-transform-runtime": "^7.2.0",
+    "@babel/polyfill": "^7.2.5",
+    "@slack/client": "^4.11.0",
+    "babel-plugin-async-to-promises": "^1.0.5",
+    "cookie-parser": "~1.4.3",
+    "cors": "^2.8.5",
+    "debug": "~2.6.9",
+    "express": "~4.16.0",
+    "google-translate": "^2.3.0",
+    "googleapis": "^46.0.0",
+    "http": "^0.0.0",
+    "http-errors": "~1.6.2",
+    "https": "^1.0.0",
+    "jade": "~1.11.0",
+    "morgan": "~1.9.0",
+    "multer": "^1.4.1",
+    "node-fetch": "^2.6.0",
+    "prettyjson": "^1.2.1",
+    "ssl": "^1.0.0",
+    "unirest": "^0.6.0",
+    "uuid": "^3.3.2"
+  }
+}
