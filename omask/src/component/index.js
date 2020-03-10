@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import userCenterIcon from "../Images/icon.svg";
 import centerIcon from "../Images/move.gif";
+import goodIcon from "../Images/good.gif";
+import nothingIcon from "../Images/soldout.png";
+
 import {
   RenderAfterNavermapsLoaded,
   NaverMap,
@@ -10,6 +13,7 @@ import {
 import * as request from "./httpRequest";
 import "./index.scss";
 import { stringify } from "querystring";
+import DaumPostcode from "react-daum-postcode";
 
 export default class Main extends Component {
   constructor(props) {
@@ -119,35 +123,55 @@ export default class Main extends Component {
       this.getData
     );
   };
-
   onClickMyPositionBtn = () => {
     this.getCurrentPosition();
+  };
+
+  handleComplete = data => {
+    console.log(111, "data", data);
+    let fullAddress = data.address;
+    let extraAddress = "";
+
+    if (data.addressType === "R") {
+      if (data.bname !== "") {
+        extraAddress += data.bname;
+      }
+      if (data.buildingName !== "") {
+        extraAddress +=
+          extraAddress !== "" ? `, ${data.buildingName}` : data.buildingName;
+      }
+      fullAddress += extraAddress !== "" ? ` (${extraAddress})` : "";
+    }
+
+    console.log(111, "ㅃㅃ", fullAddress); // e.g. '서울 성동구 왕십리로2길 20 (성수동1가)'
   };
 
   render() {
     return (
       <div className="App">
         <div className="Header">
-          <input
-            type="text"
-            name="searchValue"
-            value={this.state.searchValue}
-            onChange={this.handleInputChange}
-            placeholder="search bar"
-          />
-          <select className="Header-select" onChange={this.handleSelectChange}>
+          <div className="search">
+            <DaumPostcode
+              onComplete={this.handleComplete}
+              autoResize={true}
+              animation={true}
+            />
+          </div>
+          <select
+            className="Header-select"
+            onChange={this.handleSelectChange}
+            defaultValue={500}
+          >
             <option value={100}>반경 100m</option>
             <option value={200}>반경 200m</option>
             <option value={300}>반경 300m</option>
             <option value={400}>반경 400m</option>
-            <option value={500} selected>
-              반경 500m
-            </option>
+            <option value={500}>반경 500m</option>
             <option value={1000}>반경 1000m</option>
           </select>
           <button onClick={this.onClickMyPositionBtn}>내 위치</button>
         </div>
-
+        {/* <div className="mapWrapper"> */}
         <RenderAfterNavermapsLoaded
           ncpClientId={"fs0aqkdq7k"} // 자신의 네이버 계정에서 발급받은 Client ID
           error={<p>Maps Load Error</p>}
@@ -167,19 +191,21 @@ export default class Main extends Component {
             mapDivId={"react-naver-map"} // default: react-naver-map
             style={{
               width: "100%", // 네이버지도 가로 길이
-              height: "90vh" // 네이버지도 세로 길이
+              height: "100%" // 네이버지도 세로 길이
             }}
             center={this.state.center}
             defaultZoom={17} // 지도 초기 확대 배율
           >
-            (
             <Marker
               position={this.state.userCenter}
               clickable={false}
               icon={userCenterIcon}
               zIndex={10}
+              onClick={() => {
+                alert(`현재 위치 입니다 ^.^`);
+              }}
             />
-            )
+
             {stringify(this.state.center) !==
               stringify(this.state.userCenter) && (
               <Marker
@@ -198,18 +224,34 @@ export default class Main extends Component {
             />
             {this.state.storeDatas &&
               this.state.storeDatas.map((element, index) => {
-                const { lat, lng } = element;
+                const { lat, lng, remain_stat } = element;
+                let icon;
+                switch (remain_stat) {
+                  case "empty":
+                    icon = nothingIcon;
+                    break;
+                  case "few":
+                  case "some":
+                  case "plenty":
+                    icon = goodIcon;
+                    break;
+                  default:
+                    break;
+                }
+
                 return (
-                  <div id="pharmacy">
+                  <div key={index}>
                     <Marker
-                      key={index}
                       position={{
                         lat,
                         lng
                       }}
-                      animation={this.naverMaps.Animation.BOUNCE}
+                      // animation={this.naverMaps.Animation.BOUNCE}
+                      icon={icon}
                       onClick={() => {
-                        alert("약국");
+                        alert(
+                          `약국 이름 : ${element.name}\n주소 : ${element.addr}`
+                        );
                       }}
                     />
                   </div>
@@ -217,6 +259,7 @@ export default class Main extends Component {
               })}
           </NaverMap>
         </RenderAfterNavermapsLoaded>
+        {/* </div> */}
       </div>
     );
   }
