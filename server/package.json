@@ -23,7 +23,7 @@
     "google-translate": "^2.3.0",
     "googleapis": "^46.0.0",
     "http": "^0.0.0",
-    "http-errors": "~1.6.2",
+    "http-errors": "^1.6.3",
     "https": "^1.0.0",
     "jade": "~1.11.0",
     "morgan": "~1.9.0",
