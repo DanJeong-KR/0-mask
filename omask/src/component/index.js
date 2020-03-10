@@ -8,6 +8,7 @@ import {
   Circle
 } from "react-naver-maps";
 import * as request from "./httpRequest";
+import "./index.scss";
 
 export default class Main extends Component {
   constructor(props) {
@@ -18,6 +19,7 @@ export default class Main extends Component {
 
     this.state = {
       searchValue: "",
+
       center: {
         lat: 37.49792,
         lng: 127.02757
@@ -36,7 +38,7 @@ export default class Main extends Component {
     const res = await request.getStoreData({
       lat,
       lng,
-      m: 500
+      m: this.state.radius
     });
     const json = await res.json();
     this.setState({
@@ -92,8 +94,7 @@ export default class Main extends Component {
   };
 
   dragendListener = e => {
-    const { _lat: lat, _lng: lng } = e.coord;
-    console.log(111, "drag", lat, lng);
+    const { _lat: lat, _lng: lng } = this.mapRef.instance.getCenter();
     this.setState(
       {
         center: {
@@ -107,21 +108,36 @@ export default class Main extends Component {
     );
   };
 
+  handleSelectChange = e => {
+    this.setState(
+      {
+        radius: e.target.value
+      },
+      () => {
+        this.getData();
+      }
+    );
+  };
+
   render() {
-    console.log(111, "ddd", this.state);
     return (
       <div className="App">
-        <input
-          type="text"
-          name="searchValue"
-          value={this.state.searchValue}
-          onChange={this.handleInputChange}
-          placeholder="search bar"
-          style={{
-            width: "100%",
-            height: "100px"
-          }}
-        />
+        <div className="Header">
+          <input
+            type="text"
+            name="searchValue"
+            value={this.state.searchValue}
+            onChange={this.handleInputChange}
+            placeholder="search bar"
+          />
+          <select className="Header-select" onChange={this.handleSelectChange}>
+            <option value={100}>반경 100m</option>
+            <option value={200}>반경 200m</option>
+            <option value={300}>반경 300m</option>
+            <option value={400}>반경 400m</option>
+            <option value={500}>반경 500m</option>
+          </select>
+        </div>
 
         <RenderAfterNavermapsLoaded
           ncpClientId={"fs0aqkdq7k"} // 자신의 네이버 계정에서 발급받은 Client ID
@@ -142,7 +158,7 @@ export default class Main extends Component {
             mapDivId={"react-naver-map"} // default: react-naver-map
             style={{
               width: "100%", // 네이버지도 가로 길이
-              height: "85vh" // 네이버지도 세로 길이
+              height: "90vh" // 네이버지도 세로 길이
             }}
             center={this.state.center}
             defaultZoom={17} // 지도 초기 확대 배율
