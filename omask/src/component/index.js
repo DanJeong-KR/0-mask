@@ -41,7 +41,6 @@ export default class Main extends Component {
   }
 
   getData = async () => {
-    console.log(111, "tretert");
     const { lat, lng } = this.state.center;
     const res = await request.getStoreData({
       lat,
@@ -49,6 +48,10 @@ export default class Main extends Component {
       m: this.state.radius
     });
     const json = await res.json();
+    console.log(111, "getData", json);
+    if (json.error) {
+      alert("정부 혹은 사용자의 네트워크가 원활하지 않습니다.");
+    }
     this.setState({
       storeDatas: json.stores
     });
@@ -56,15 +59,15 @@ export default class Main extends Component {
   };
 
   componentDidMount() {
-    // console.log(111, "eee", window.naver.maps.Event);
     console.log("componentDidMount");
-    this.getData();
     this.getCurrentPosition();
   }
 
   componentDidUpdate() {
     console.log("componentDidUpdate");
   }
+
+  componentWillUpdate() {}
 
   getCurrentPosition() {
     if (navigator.geolocation) {
@@ -111,6 +114,12 @@ export default class Main extends Component {
     );
   };
 
+  dragstartListener = e => {
+    this.setState({
+      storeDatas: []
+    });
+  };
+
   handleSelectChange = e => {
     this.setState(
       {
@@ -124,9 +133,13 @@ export default class Main extends Component {
   };
 
   handleComplete = data => {
+    console.log(111, "ddd", data);
     window.naver.maps.Service.geocode(
       {
-        query: data.jibunAddress
+        query:
+          data.autoJibunAddress.length > 1
+            ? data.autoJibunAddress
+            : data.jibunAddress
       },
       (status, response) => {
         if (status !== window.naver.maps.Service.Status.OK) {
@@ -170,156 +183,167 @@ export default class Main extends Component {
   render() {
     return (
       <div className="App">
-        <div className="Header">
-          <div className="description">
-            <div className="description-buttonWrapper">
-              <img src={goodIcon} alt="good" />
-              <p className="Header-button">30개 이상!</p>
+        <div className="OMask">
+          <div className="Header">
+            <div className="description">
+              <div className="description-buttonWrapper">
+                <img src={goodIcon} alt="good" />
+                <p className="Header-button">30개 이상!</p>
+              </div>
+              <div className="description-buttonWrapper">
+                <img src={fewIcon} alt="few" />
+                <p className="Header-button">30개 미만!</p>
+              </div>
+              <div className="description-buttonWrapper">
+                <img src={nothingIcon} alt="nothingIcon" />
+                <p className="Header-button">품절 ㅜ ^ ㅜ</p>
+              </div>
+              <div className="description-buttonWrapper">
+                <img src={userCenterIcon} alt="userCenterIcon" />
+                <p className="Header-button">현재위치</p>
+              </div>
+              <div className="description-buttonWrapper">
+                <img src={centerIcon} alt="centerIcon" />
+                <p className="Header-button">기준 위치 (반경)</p>
+              </div>
             </div>
-            <div className="description-buttonWrapper">
-              <img src={fewIcon} alt="few" />
-              <p className="Header-button">30개 미만!</p>
+            <hr align="center" />
+            <select
+              className="Header-select"
+              onChange={this.handleSelectChange}
+              defaultValue={500}
+            >
+              <option value={100}>반경 100m</option>
+              <option value={200}>반경 200m</option>
+              <option value={300}>반경 300m</option>
+              <option value={400}>반경 400m</option>
+              <option value={500}>반경 500m</option>
+              <option value={1000}>반경 1000m</option>
+            </select>
+            <div className="buttonWrapper">
+              <img src={centerIcon} width={30} alt="focus" />
+              <p className="Header-button" onClick={this.onClickMyPositionBtn}>
+                내 위치
+              </p>
             </div>
-            <div className="description-buttonWrapper">
-              <img src={nothingIcon} alt="nothingIcon" />
-              <p className="Header-button">품절 ㅜ ^ ㅜ</p>
-            </div>
-            <div className="description-buttonWrapper">
-              <img src={userCenterIcon} alt="userCenterIcon" />
-              <p className="Header-button">현재위치</p>
-            </div>
-            <div className="description-buttonWrapper">
-              <img src={centerIcon} alt="centerIcon" />
-              <p className="Header-button">기준 위치 (반경)</p>
-            </div>
-          </div>
-          <div className="search">
-            <DaumPostcode
-              onComplete={this.handleComplete}
-              autoResize={true}
-              animation={true}
-            />
-          </div>
-          <select
-            className="Header-select"
-            onChange={this.handleSelectChange}
-            defaultValue={500}
-          >
-            <option value={100}>반경 100m</option>
-            <option value={200}>반경 200m</option>
-            <option value={300}>반경 300m</option>
-            <option value={400}>반경 400m</option>
-            <option value={500}>반경 500m</option>
-            <option value={1000}>반경 1000m</option>
-          </select>
-          <div className="buttonWrapper">
-            <img src={centerIcon} width={25} alt="focus" />
-            <p className="Header-button" onClick={this.onClickMyPositionBtn}>
-              내 위치
-            </p>
-          </div>
-        </div>
-        {/* <div className="mapWrapper"> */}
-        <RenderAfterNavermapsLoaded
-          ncpClientId={"fs0aqkdq7k"} // 자신의 네이버 계정에서 발급받은 Client ID
-          error={<p>Maps Load Error</p>}
-          loading={<p>Maps Loading...</p>}
-        >
-          <NaverMap
-            naverRef={ref => {
-              if (!this.mapRef) {
-                this.mapRef = ref;
-                window.naver.maps.Event.addListener(
-                  this.mapRef.instance,
-                  "dragend",
-                  this.dragendListener
-                );
-              }
-            }}
-            mapDivId={"react-naver-map"} // default: react-naver-map
-            style={{
-              width: "100%", // 네이버지도 가로 길이
-              height: "100%" // 네이버지도 세로 길이
-            }}
-            center={this.state.center}
-            defaultZoom={17} // 지도 초기 확대 배율
-            onClick={() => {
-              if (this.infoWindow) {
-                this.infoWindow.close();
-              }
-            }}
-          >
-            <Marker
-              position={this.state.userCenter}
-              clickable={false}
-              icon={userCenterIcon}
-              zIndex={10}
-              onClick={() => {
-                alert(`현재 위치 입니다 ^.^`);
-              }}
-            />
 
-            {stringify(this.state.center) !==
-              stringify(this.state.userCenter) && (
-              <Marker
-                position={this.state.center}
-                clickable={false}
-                icon={centerIcon}
+            <div className="search">
+              <DaumPostcode
+                onComplete={this.handleComplete}
+                autoResize={true}
+                animation={true}
               />
-            )}
-            <Circle
-              center={this.state.center}
-              radius={this.state.radius}
-              fillOpacity={0.2}
-              fillColor={"#A5E124"}
-              strokeColor={"#A5E124"}
-              clickable={false}
-            />
-            {this.state.storeDatas &&
-              this.state.storeDatas.map((element, index) => {
-                const { lat, lng, remain_stat } = element;
-                let icon;
-                switch (remain_stat) {
-                  case "empty":
-                    icon = nothingIcon;
-                    break;
-                  case "few":
-                    icon = fewIcon;
-                    break;
-                  case "some":
-                  case "plenty":
-                    icon = goodIcon;
-                    break;
-                  default:
-                    break;
+            </div>
+          </div>
+          {/* <div className="mapWrapper"> */}
+          <RenderAfterNavermapsLoaded
+            ncpClientId={"fs0aqkdq7k"} // 자신의 네이버 계정에서 발급받은 Client ID
+            error={<p>Maps Load Error</p>}
+            loading={<p>Maps Loading...</p>}
+          >
+            <NaverMap
+              naverRef={ref => {
+                if (!this.mapRef) {
+                  this.mapRef = ref;
+                  window.naver.maps.Event.addListener(
+                    this.mapRef.instance,
+                    "dragend",
+                    this.dragendListener
+                  );
+                  window.naver.maps.Event.addListener(
+                    this.mapRef.instance,
+                    "dragstart",
+                    this.dragstartListener
+                  );
                 }
+              }}
+              mapDivId={"react-naver-map"} // default: react-naver-map
+              style={{
+                width: "100%", // 네이버지도 가로 길이
+                height: "100%" // 네이버지도 세로 길이
+              }}
+              center={this.state.center}
+              defaultZoom={17} // 지도 초기 확대 배율
+              onClick={() => {
+                if (this.infoWindow) {
+                  this.infoWindow.close();
+                }
+              }}
+            >
+              <Marker
+                position={this.state.userCenter}
+                clickable={false}
+                icon={userCenterIcon}
+                zIndex={10}
+                onClick={() => {
+                  alert(`현재 위치 입니다 ^.^`);
+                }}
+              />
 
-                return (
-                  <div key={index}>
-                    <Marker
-                      position={{
-                        lat,
-                        lng
-                      }}
-                      // animation={this.naverMaps.Animation.BOUNCE}
-                      icon={icon}
-                      onClick={
-                        remain_stat !== "empty"
-                          ? () => {
-                              alert(
-                                `약국 이름 : ${element.name}\n주소 : ${element.addr}`
-                              );
-                              // this.handleMarker(element);
-                            }
-                          : undefined
-                      }
-                    />
-                  </div>
-                );
-              })}
-          </NaverMap>
-        </RenderAfterNavermapsLoaded>
-        {/* </div> */}
+              {stringify(this.state.center) !==
+                stringify(this.state.userCenter) && (
+                <Marker
+                  position={this.state.center}
+                  clickable={false}
+                  icon={centerIcon}
+                  animation={this.naverMaps.Animation.BOUNCE}
+                />
+              )}
+              <Circle
+                center={this.state.center}
+                radius={this.state.radius}
+                fillOpacity={0.2}
+                fillColor={"#A5E124"}
+                strokeColor={"#A5E124"}
+                clickable={false}
+              />
+              {this.state.storeDatas &&
+                this.state.storeDatas.map((element, index) => {
+                  const { lat, lng, remain_stat } = element;
+                  let icon;
+                  switch (remain_stat) {
+                    case "empty":
+                      icon = nothingIcon;
+                      break;
+                    case "few":
+                      icon = fewIcon;
+                      break;
+                    case "some":
+                    case "plenty":
+                      icon = goodIcon;
+                      break;
+                    default:
+                      icon = nothingIcon;
+                      break;
+                  }
+
+                  return (
+                    <div key={index}>
+                      <Marker
+                        title={`약국 이름 : ${element.name}\n주소 : ${element.addr}`}
+                        position={{
+                          lat,
+                          lng
+                        }}
+                        icon={icon}
+                        onClick={
+                          remain_stat !== "empty"
+                            ? () => {
+                                alert(
+                                  `약국 이름 : ${element.name}\n주소 : ${element.addr}`
+                                );
+                                // this.handleMarker(element);
+                              }
+                            : undefined
+                        }
+                      />
+                    </div>
+                  );
+                })}
+            </NaverMap>
+          </RenderAfterNavermapsLoaded>
+          {/* </div> */}
+        </div>
       </div>
     );
   }
