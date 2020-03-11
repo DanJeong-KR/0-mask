@@ -4,6 +4,7 @@ import centerIcon from "../Images/focus.svg";
 import goodIcon from "../Images/good.gif";
 import fewIcon from "../Images/few.gif";
 import nothingIcon from "../Images/soldout2.svg";
+import loadingIcon from "../Images/loading.gif";
 
 import {
   RenderAfterNavermapsLoaded,
@@ -25,6 +26,7 @@ export default class Main extends Component {
     this.infoWindow = undefined;
 
     this.state = {
+      isLoading: false,
       searchValue: "",
 
       center: {
@@ -41,30 +43,36 @@ export default class Main extends Component {
   }
 
   getData = async () => {
-    console.log(111, "tretert");
-    const { lat, lng } = this.state.center;
-    const res = await request.getStoreData({
-      lat,
-      lng,
-      m: this.state.radius
+    this.setState({ isLoading: true }, async () => {
+      const { lat, lng } = this.state.center;
+      const res = await request.getStoreData({
+        lat,
+        lng,
+        m: this.state.radius
+      });
+      const json = await res.json();
+      console.log(111, "getData", json);
+      if (json.error) {
+        alert("정부 혹은 사용자의 네트워크가 원활하지 않습니다.");
+      }
+      this.setState({
+        storeDatas: json.stores,
+        isLoading: false
+      });
+      console.log(json);
     });
-    const json = await res.json();
-    this.setState({
-      storeDatas: json.stores
-    });
-    console.log(json);
   };
 
   componentDidMount() {
-    // console.log(111, "eee", window.naver.maps.Event);
     console.log("componentDidMount");
-    this.getData();
     this.getCurrentPosition();
   }
 
   componentDidUpdate() {
     console.log("componentDidUpdate");
   }
+
+  componentWillUpdate() {}
 
   getCurrentPosition() {
     if (navigator.geolocation) {
@@ -111,6 +119,12 @@ export default class Main extends Component {
     );
   };
 
+  dragstartListener = e => {
+    this.setState({
+      storeDatas: []
+    });
+  };
+
   handleSelectChange = e => {
     this.setState(
       {
@@ -125,9 +139,13 @@ export default class Main extends Component {
   };
 
   handleComplete = data => {
+    console.log(111, "ddd", data);
     window.naver.maps.Service.geocode(
       {
-        query: data.jibunAddress
+        query:
+          data.autoJibunAddress.length > 1
+            ? data.autoJibunAddress
+            : data.jibunAddress
       },
       (status, response) => {
         if (status !== window.naver.maps.Service.Status.OK) {
@@ -175,6 +193,11 @@ export default class Main extends Component {
   render() {
     return (
       <div className="App">
+        {this.state.isLoading && (
+          <div className="overlay">
+            <img className="loadingIcon" src={loadingIcon} alt="loadingIcon" />
+          </div>
+        )}
         <div id="sidebar" className="sidebar">
           <div className="sidebar_toggle" onClick={this.onClickSidebarToggle} />
           {/* sidebar_search */}
@@ -229,6 +252,7 @@ export default class Main extends Component {
           </div>
         </div>
         {/* <div className="mapWrapper"> */}
+
         <RenderAfterNavermapsLoaded
           ncpClientId={"fs0aqkdq7k"} // 자신의 네이버 계정에서 발급받은 Client ID
           error={<p>Maps Load Error</p>}
@@ -242,6 +266,11 @@ export default class Main extends Component {
                   this.mapRef.instance,
                   "dragend",
                   this.dragendListener
+                );
+                window.naver.maps.Event.addListener(
+                  this.mapRef.instance,
+                  "dragstart",
+                  this.dragstartListener
                 );
               }
             }}
@@ -274,6 +303,7 @@ export default class Main extends Component {
                 position={this.state.center}
                 clickable={false}
                 icon={centerIcon}
+                animation={this.naverMaps.Animation.BOUNCE}
               />
             )}
             <Circle
@@ -300,17 +330,18 @@ export default class Main extends Component {
                     icon = goodIcon;
                     break;
                   default:
+                    icon = nothingIcon;
                     break;
                 }
 
                 return (
                   <div key={index}>
                     <Marker
+                      title={`약국 이름 : ${element.name}\n주소 : ${element.addr}`}
                       position={{
                         lat,
                         lng
                       }}
-                      // animation={this.naverMaps.Animation.BOUNCE}
                       icon={icon}
                       onClick={
                         remain_stat !== "empty"
@@ -328,7 +359,6 @@ export default class Main extends Component {
               })}
           </NaverMap>
         </RenderAfterNavermapsLoaded>
-        {/* </div> */}
       </div>
     );
   }
