@@ -41,6 +41,7 @@ export default class Main extends Component {
   }
 
   getData = async () => {
+    console.log(111, "tretert");
     const { lat, lng } = this.state.center;
     const res = await request.getStoreData({
       lat,
@@ -123,24 +124,9 @@ export default class Main extends Component {
   };
 
   handleComplete = data => {
-    let fullAddress = data.address;
-    let extraAddress = "";
-
-    if (data.addressType === "R") {
-      if (data.bname !== "") {
-        extraAddress += data.bname;
-      }
-      if (data.buildingName !== "") {
-        extraAddress +=
-          extraAddress !== "" ? `, ${data.buildingName}` : data.buildingName;
-      }
-      fullAddress += extraAddress !== "" ? ` (${extraAddress})` : "";
-    }
-
-    console.log(111, "ㅃㅃ", window.naver.maps.Service); // e.g. '서울 성동구 왕십리로2길 20 (성수동1가)'
     window.naver.maps.Service.geocode(
       {
-        query: fullAddress
+        query: data.jibunAddress
       },
       (status, response) => {
         if (status !== window.naver.maps.Service.Status.OK) {
@@ -161,24 +147,24 @@ export default class Main extends Component {
     );
   };
 
+  // marker popup
   handleMarker = element => {
-    const { lat, lng } = element;
-    if (!this.infoWindow) {
-      this.infoWindow = new window.naver.maps.InfoWindow({
-        position: new window.naver.maps.LatLng(lat + 0.0003, lng),
-        content: `약국 이름 : ${element.name}      주소 : ${element.addr}`,
-        maxWidth: 140,
-        backgroundColor: "#eee",
-        borderColor: "#2db400",
-        borderWidth: 5,
-        anchorSize: new window.naver.maps.Size(10, 10),
-        anchorSkew: true,
-        anchorColor: "#eee",
-
-        pixelOffset: new window.naver.maps.Point(20, -5)
-      });
-    }
-    this.infoWindow.open(this.mapRef.instance);
+    // const { lat, lng } = element;
+    // if (!this.infoWindow) {
+    //   this.infoWindow = new window.naver.maps.InfoWindow({
+    //     position: new window.naver.maps.LatLng(lat + 0.0003, lng),
+    //     content: `약국 이름 : ${element.name}      주소 : ${element.addr}`,
+    //     maxWidth: 140,
+    //     backgroundColor: "#eee",
+    //     borderColor: "#2db400",
+    //     borderWidth: 5,
+    //     anchorSize: new window.naver.maps.Size(10, 10),
+    //     anchorSkew: true,
+    //     anchorColor: "#eee",
+    //     pixelOffset: new window.naver.maps.Point(20, -5)
+    //   });
+    // }
+    // this.infoWindow.open(this.mapRef.instance);
   };
 
   render() {
@@ -320,7 +306,10 @@ export default class Main extends Component {
                       onClick={
                         remain_stat !== "empty"
                           ? () => {
-                              this.handleMarker(element);
+                              alert(
+                                `약국 이름 : ${element.name}\n주소 : ${element.addr}`
+                              );
+                              // this.handleMarker(element);
                             }
                           : undefined
                       }
