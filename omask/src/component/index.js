@@ -63,7 +63,6 @@ export default class Main extends Component {
           m: this.state.radius
         });
         const json = await res.json();
-        console.log(111, "getData", json);
         if (json.error) {
           alert("사용자 혹은 정부의 네트워크가 원활하지 않습니다.");
         } else {
@@ -165,7 +164,6 @@ export default class Main extends Component {
   };
 
   handleComplete = data => {
-    console.log(111, "ddd", data);
     window.naver.maps.Service.geocode(
       {
         query:
