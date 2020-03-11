@@ -49,7 +49,7 @@ export default class Main extends Component {
         lng: 127.02757
       },
       storeDatas: [],
-      radius: 500
+      radius: 200
     };
   }
 
@@ -245,7 +245,7 @@ export default class Main extends Component {
           <select
             className="Header-select"
             onChange={this.handleSelectChange}
-            defaultValue={500}
+            defaultValue={200}
           >
             <option value={100}>반경 100m</option>
             <option value={200}>반경 200m</option>
@@ -316,7 +316,7 @@ export default class Main extends Component {
               height: "100%" // 네이버지도 세로 길이
             }}
             center={this.state.center}
-            defaultZoom={17} // 지도 초기 확대 배율
+            defaultZoom={19} // 지도 초기 확대 배율
             onClick={() => {
               if (this.infoWindow) {
                 this.infoWindow.close();
@@ -354,19 +354,24 @@ export default class Main extends Component {
               this.state.storeDatas.map((element, index) => {
                 const { lat, lng, remain_stat } = element;
                 let icon;
+                let remain;
                 switch (remain_stat) {
                   case "empty":
                     icon = nothingIcon;
+                    remain = "품절";
                     break;
                   case "few":
                     icon = fewIcon;
+                    remain = "30개 미만! 방문 하셔도 품절일 수 있습니다.";
                     break;
                   case "some":
                   case "plenty":
                     icon = goodIcon;
+                    remain = "30개 이상! 방문하시는 것을 추천드립니다";
                     break;
                   default:
                     icon = nothingIcon;
+                    remain = "품절";
                     break;
                 }
 
@@ -383,7 +388,7 @@ export default class Main extends Component {
                         remain_stat !== "empty"
                           ? () => {
                               alert(
-                                `약국 이름 : ${element.name}\n주소 : ${element.addr}`
+                                `마스크 재고 : ${remain}\n약국 이름 : ${element.name}\n주소 : ${element.addr}`
                               );
                               // this.handleMarker(element);
                             }
