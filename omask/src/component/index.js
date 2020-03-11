@@ -5,6 +5,8 @@ import goodIcon from "../Images/good.gif";
 import fewIcon from "../Images/few.gif";
 import nothingIcon from "../Images/soldout2.svg";
 import loadingIcon from "../Images/loading.gif";
+import menuIcon from "../Images/menu.svg";
+import Select from "react-select";
 
 import {
   RenderAfterNavermapsLoaded,
@@ -24,6 +26,15 @@ export default class Main extends Component {
     this.naverMaps = window.naver.maps;
     this.mapRef = undefined;
     this.infoWindow = undefined;
+
+    this.selectOptions = [
+      { value: 100, label: "반경 100m" },
+      { value: 200, label: "반경 200m" },
+      { value: 300, label: "반경 300m" },
+      { value: 400, label: "반경 400m" },
+      { value: 500, label: "반경 500m" },
+      { value: 1000, label: "반경 1000m" }
+    ];
 
     this.state = {
       isLoading: false,
@@ -45,27 +56,35 @@ export default class Main extends Component {
   getData = async () => {
     this.setState({ isLoading: true }, async () => {
       const { lat, lng } = this.state.center;
-      const res = await request.getStoreData({
-        lat,
-        lng,
-        m: this.state.radius
-      });
-      const json = await res.json();
-      console.log(111, "getData", json);
-      if (json.error) {
-        alert("정부 혹은 사용자의 네트워크가 원활하지 않습니다.");
-      } else {
-        if (json.count === 0) {
-          alert(`반경 ${this.state.radius}m 내에 약국이 없습니다`);
-          this.setState({
-            isLoading: false
-          });
+      try {
+        const res = await request.getStoreData({
+          lat,
+          lng,
+          m: this.state.radius
+        });
+        const json = await res.json();
+        console.log(111, "getData", json);
+        if (json.error) {
+          alert("사용자 혹은 정부의 네트워크가 원활하지 않습니다.");
         } else {
-          this.setState({
-            storeDatas: json.stores,
-            isLoading: false
-          });
+          if (json.count === 0) {
+            alert(`반경 ${this.state.radius}m 내에 약국이 없습니다`);
+            this.setState({
+              isLoading: false
+            });
+          } else {
+            this.setState({
+              storeDatas: json.stores,
+              isLoading: false
+            });
+          }
         }
+      } catch (e) {
+        console.log(e);
+        alert(`유저 혹은 정부의 네트워크가 원활하지 않습니다.`);
+        this.setState({
+          isLoading: false
+        });
       }
     });
   };
@@ -206,7 +225,37 @@ export default class Main extends Component {
           </div>
         )}
         <div id="sidebar" className="sidebar">
-          <div className="sidebar_toggle" onClick={this.onClickSidebarToggle} />
+          <img
+            className="sidebar_toggle"
+            src={menuIcon}
+            alt="menuIcon"
+            onClick={this.onClickSidebarToggle}
+          />
+          {/* sidebar_utils */}
+          <div className="buttonWrapper" onClick={this.onClickMyPositionBtn}>
+            <img src={centerIcon} width={25} alt="focus" />
+            <p className="Header-button">내 위치</p>
+          </div>
+          {/* sidebar_options */}
+          {/* <Select
+            className="Header-select"
+            value={null}
+            onChange={this.handleSelectChange}
+            options={this.options}
+            defaultValue={500}
+          /> */}
+          <select
+            className="Header-select"
+            onChange={this.handleSelectChange}
+            defaultValue={500}
+          >
+            <option value={100}>반경 100m</option>
+            <option value={200}>반경 200m</option>
+            <option value={300}>반경 300m</option>
+            <option value={400}>반경 400m</option>
+            <option value={500}>반경 500m</option>
+            <option value={1000}>반경 1000m</option>
+          </select>
           {/* sidebar_search */}
           <div className="sidebar_search">
             <DaumPostcode
@@ -238,24 +287,6 @@ export default class Main extends Component {
               <img src={centerIcon} alt="centerIcon" />
               <p className="sidebar_marker_desc">기준 위치 (반경)</p>
             </div>
-          </div>
-          {/* sidebar_options */}
-          <select
-            className="Header-select"
-            onChange={this.handleSelectChange}
-            defaultValue={500}
-          >
-            <option value={100}>반경 100m</option>
-            <option value={200}>반경 200m</option>
-            <option value={300}>반경 300m</option>
-            <option value={400}>반경 400m</option>
-            <option value={500}>반경 500m</option>
-            <option value={1000}>반경 1000m</option>
-          </select>
-          {/* sidebar_utils */}
-          <div className="buttonWrapper" onClick={this.onClickMyPositionBtn}>
-            <img src={centerIcon} width={25} alt="focus" />
-            <p className="Header-button">내 위치</p>
           </div>
         </div>
         {/* <div className="mapWrapper"> */}
