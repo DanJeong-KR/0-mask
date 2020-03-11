@@ -1,34 +1,49 @@
 .App {
+  position: relative;
+  display: flex;
   width: 100%;
   height: 100vh;
-  display: flex;
-  .Header {
-    font-weight: bold;
-    font-size: 18px;
-    // display: flex;
-    height: 60px;
+  background-color: #cecece;
+
+  .sidebar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: left 0.2s ease-in;
+    height: 100vh;
     width: 300px;
-    display: inline-block;
-    .description {
-      .description-buttonWrapper {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        img {
-          margin-right: 10px;
-        }
+    background-color: #fff;
+
+    .sidebar_toggle {
+      position: absolute;
+      top: 6px;
+      right: -42px;
+      width: 36px;
+      height: 36px;
+      background-color: #000;
+      cursor: pointer;
+    }
+
+    .sidebar_markers {
+      padding: 12px 24px;
+    }
+    .sidebar_marker {
+      display: flex;
+      margin: 12px 0;
+
+      img {
+        object-fit: contain;
+        width: 36px;
+        height: 36px;
+      }
+      .sidebar_marker_desc {
+        margin: 8px 12px;
+        font-weight: bold;
+        font-size: 18px;
       }
     }
 
     .search {
-      //   z-index: 10;
-      //   border: 1px solid #222222;
-      //   overflow: hidden;
-      //   overflow: unset;
-      //   scroll-behavior: unset;
-
-      //   margin: 50px 0px 0px 30px;
-      //   position: absolute;
     }
 
     .Header-select {
@@ -56,6 +71,9 @@
         font-size: 18px;
       }
     }
+  }
+  .sidebar-hide {
+    left: -300px;
   }
 }
 

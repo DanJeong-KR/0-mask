@@ -167,32 +167,39 @@ export default class Main extends Component {
     // this.infoWindow.open(this.mapRef.instance);
   };
 
+  onClickSidebarToggle = () => {
+    document.getElementById("sidebar").classList.toggle("sidebar-hide");
+  };
+
   render() {
     return (
       <div className="App">
-        <div className="Header">
-          <div className="description">
-            <div className="description-buttonWrapper">
+        <div id="sidebar" className="sidebar">
+          <div className="sidebar_toggle" onClick={this.onClickSidebarToggle} />
+          {/* sidebar_markers */}
+          <div className="sidebar_markers">
+            <div className="sidebar_marker">
               <img src={goodIcon} alt="good" />
-              <p className="Header-button">30개 이상!</p>
+              <p className="sidebar_marker_desc">30개 이상!</p>
             </div>
-            <div className="description-buttonWrapper">
+            <div className="sidebar_marker">
               <img src={fewIcon} alt="few" />
-              <p className="Header-button">30개 미만!</p>
+              <p className="sidebar_marker_desc">30개 미만!</p>
             </div>
-            <div className="description-buttonWrapper">
+            <div className="sidebar_marker">
               <img src={nothingIcon} alt="nothingIcon" />
-              <p className="Header-button">품절 ㅜ ^ ㅜ</p>
+              <p className="sidebar_marker_desc">품절 ㅜ ^ ㅜ</p>
             </div>
-            <div className="description-buttonWrapper">
+            <div className="sidebar_marker">
               <img src={userCenterIcon} alt="userCenterIcon" />
-              <p className="Header-button">현재위치</p>
+              <p className="sidebar_marker_desc">현재위치</p>
             </div>
-            <div className="description-buttonWrapper">
+            <div className="sidebar_marker">
               <img src={centerIcon} alt="centerIcon" />
-              <p className="Header-button">기준 위치 (반경)</p>
+              <p className="sidebar_marker_desc">기준 위치 (반경)</p>
             </div>
           </div>
+          {/* sidebar_search */}
           <div className="search">
             <DaumPostcode
               onComplete={this.handleComplete}
@@ -200,6 +207,7 @@ export default class Main extends Component {
               animation={true}
             />
           </div>
+          {/* sidebar_options */}
           <select
             className="Header-select"
             onChange={this.handleSelectChange}
@@ -212,6 +220,7 @@ export default class Main extends Component {
             <option value={500}>반경 500m</option>
             <option value={1000}>반경 1000m</option>
           </select>
+          {/* sidebar_utils */}
           <div className="buttonWrapper">
             <img src={centerIcon} width={25} alt="focus" />
             <p className="Header-button" onClick={this.onClickMyPositionBtn}>
