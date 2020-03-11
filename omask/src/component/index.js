@@ -54,12 +54,19 @@ export default class Main extends Component {
       console.log(111, "getData", json);
       if (json.error) {
         alert("정부 혹은 사용자의 네트워크가 원활하지 않습니다.");
+      } else {
+        if (json.count === 0) {
+          alert(`반경 ${this.state.radius}m 내에 약국이 없습니다`);
+          this.setState({
+            isLoading: false
+          });
+        } else {
+          this.setState({
+            storeDatas: json.stores,
+            isLoading: false
+          });
+        }
       }
-      this.setState({
-        storeDatas: json.stores,
-        isLoading: false
-      });
-      console.log(json);
     });
   };
 
@@ -222,14 +229,6 @@ export default class Main extends Component {
               <p className="sidebar_marker_desc">기준 위치 (반경)</p>
             </div>
           </div>
-          {/* sidebar_search */}
-          <div className="search">
-            <DaumPostcode
-              onComplete={this.handleComplete}
-              autoResize={true}
-              animation={true}
-            />
-          </div>
           {/* sidebar_options */}
           <select
             className="Header-select"
@@ -244,11 +243,17 @@ export default class Main extends Component {
             <option value={1000}>반경 1000m</option>
           </select>
           {/* sidebar_utils */}
-          <div className="buttonWrapper">
+          <div className="buttonWrapper" onClick={this.onClickMyPositionBtn}>
             <img src={centerIcon} width={25} alt="focus" />
-            <p className="Header-button" onClick={this.onClickMyPositionBtn}>
-              내 위치
-            </p>
+            <p className="Header-button">내 위치</p>
+          </div>
+          {/* sidebar_search */}
+          <div className="search">
+            <DaumPostcode
+              onComplete={this.handleComplete}
+              autoResize={true}
+              animation={true}
+            />
           </div>
         </div>
         {/* <div className="mapWrapper"> */}
