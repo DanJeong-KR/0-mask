@@ -140,6 +140,7 @@ export default class Main extends Component {
       this.getData
     );
   };
+
   onClickMyPositionBtn = () => {
     this.getCurrentPosition();
   };
@@ -206,8 +207,17 @@ export default class Main extends Component {
         )}
         <div id="sidebar" className="sidebar">
           <div className="sidebar_toggle" onClick={this.onClickSidebarToggle} />
+          {/* sidebar_search */}
+          <div className="sidebar_search">
+            <DaumPostcode
+              onComplete={this.handleComplete}
+              autoResize={true}
+              animation={true}
+            />
+          </div>
           {/* sidebar_markers */}
           <div className="sidebar_markers">
+            <div className="sidebar_title"></div>
             <div className="sidebar_marker">
               <img src={goodIcon} alt="good" />
               <p className="sidebar_marker_desc">30개 이상!</p>
@@ -246,14 +256,6 @@ export default class Main extends Component {
           <div className="buttonWrapper" onClick={this.onClickMyPositionBtn}>
             <img src={centerIcon} width={25} alt="focus" />
             <p className="Header-button">내 위치</p>
-          </div>
-          {/* sidebar_search */}
-          <div className="search">
-            <DaumPostcode
-              onComplete={this.handleComplete}
-              autoResize={true}
-              animation={true}
-            />
           </div>
         </div>
         {/* <div className="mapWrapper"> */}
