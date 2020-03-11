@@ -4,6 +4,7 @@ import centerIcon from "../Images/focus.svg";
 import goodIcon from "../Images/good.gif";
 import fewIcon from "../Images/few.gif";
 import nothingIcon from "../Images/soldout2.svg";
+import loadingIcon from "../Images/loading.gif";
 
 import {
   RenderAfterNavermapsLoaded,
@@ -25,6 +26,7 @@ export default class Main extends Component {
     this.infoWindow = undefined;
 
     this.state = {
+      isLoading: false,
       searchValue: "",
 
       center: {
@@ -41,21 +43,24 @@ export default class Main extends Component {
   }
 
   getData = async () => {
-    const { lat, lng } = this.state.center;
-    const res = await request.getStoreData({
-      lat,
-      lng,
-      m: this.state.radius
+    this.setState({ isLoading: true }, async () => {
+      const { lat, lng } = this.state.center;
+      const res = await request.getStoreData({
+        lat,
+        lng,
+        m: this.state.radius
+      });
+      const json = await res.json();
+      console.log(111, "getData", json);
+      if (json.error) {
+        alert("정부 혹은 사용자의 네트워크가 원활하지 않습니다.");
+      }
+      this.setState({
+        storeDatas: json.stores,
+        isLoading: false
+      });
+      console.log(json);
     });
-    const json = await res.json();
-    console.log(111, "getData", json);
-    if (json.error) {
-      alert("정부 혹은 사용자의 네트워크가 원활하지 않습니다.");
-    }
-    this.setState({
-      storeDatas: json.stores
-    });
-    console.log(json);
   };
 
   componentDidMount() {
@@ -187,6 +192,11 @@ export default class Main extends Component {
   render() {
     return (
       <div className="App">
+        {this.state.isLoading && (
+          <div className="overlay">
+            <img className="loadingIcon" src={loadingIcon} alt="loadingIcon" />
+          </div>
+        )}
         <div id="sidebar" className="sidebar">
           <div className="sidebar_toggle" onClick={this.onClickSidebarToggle} />
           {/* sidebar_markers */}
@@ -242,6 +252,7 @@ export default class Main extends Component {
           </div>
         </div>
         {/* <div className="mapWrapper"> */}
+
         <RenderAfterNavermapsLoaded
           ncpClientId={"fs0aqkdq7k"} // 자신의 네이버 계정에서 발급받은 Client ID
           error={<p>Maps Load Error</p>}
