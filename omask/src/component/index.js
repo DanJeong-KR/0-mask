@@ -119,6 +119,7 @@ export default class Main extends Component {
       this.getData
     );
   };
+
   onClickMyPositionBtn = () => {
     this.getCurrentPosition();
   };
@@ -176,8 +177,17 @@ export default class Main extends Component {
       <div className="App">
         <div id="sidebar" className="sidebar">
           <div className="sidebar_toggle" onClick={this.onClickSidebarToggle} />
+          {/* sidebar_search */}
+          <div className="sidebar_search">
+            <DaumPostcode
+              onComplete={this.handleComplete}
+              autoResize={true}
+              animation={true}
+            />
+          </div>
           {/* sidebar_markers */}
           <div className="sidebar_markers">
+            <div className="sidebar_title"></div>
             <div className="sidebar_marker">
               <img src={goodIcon} alt="good" />
               <p className="sidebar_marker_desc">30개 이상!</p>
@@ -199,33 +209,23 @@ export default class Main extends Component {
               <p className="sidebar_marker_desc">기준 위치 (반경)</p>
             </div>
           </div>
-          {/* sidebar_search */}
-          <div className="search">
-            <DaumPostcode
-              onComplete={this.handleComplete}
-              autoResize={true}
-              animation={true}
-            />
-          </div>
           {/* sidebar_options */}
-          <select
-            className="Header-select"
-            onChange={this.handleSelectChange}
-            defaultValue={500}
-          >
-            <option value={100}>반경 100m</option>
-            <option value={200}>반경 200m</option>
-            <option value={300}>반경 300m</option>
-            <option value={400}>반경 400m</option>
-            <option value={500}>반경 500m</option>
-            <option value={1000}>반경 1000m</option>
-          </select>
-          {/* sidebar_utils */}
-          <div className="buttonWrapper">
-            <img src={centerIcon} width={25} alt="focus" />
-            <p className="Header-button" onClick={this.onClickMyPositionBtn}>
-              내 위치
-            </p>
+          <div className="sidebar_options">
+            <div className="sidebar_title"></div>
+            <select onChange={this.handleSelectChange} defaultValue={500}>
+              <option value={100}>반경 100m</option>
+              <option value={200}>반경 200m</option>
+              <option value={300}>반경 300m</option>
+              <option value={400}>반경 400m</option>
+              <option value={500}>반경 500m</option>
+              <option value={1000}>반경 1000m</option>
+            </select>
+            <div className="buttonWrapper">
+              <img src={centerIcon} width={25} alt="focus" />
+              <p className="Header-button" onClick={this.onClickMyPositionBtn}>
+                내 위치
+              </p>
+            </div>
           </div>
         </div>
         {/* <div className="mapWrapper"> */}
