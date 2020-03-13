@@ -6,6 +6,8 @@ import fewIcon from "../Images/few.gif";
 import nothingIcon from "../Images/soldout2.svg";
 import loadingIcon from "../Images/loading.gif";
 import menuIcon from "../Images/menu.svg";
+import searchIcon from "../Images/search.svg";
+
 import moment from "moment";
 import Select from "react-select";
 
@@ -233,7 +235,7 @@ export default class Main extends Component {
         <div id="sidebar" className="sidebar sidebar-hide">
           <img
             className="sidebar_toggle"
-            src={menuIcon}
+            src={searchIcon}
             alt="menuIcon"
             onClick={this.onClickSidebarToggle}
           />
@@ -253,7 +255,7 @@ export default class Main extends Component {
           <select
             className="Header-select"
             onChange={this.handleSelectChange}
-            defaultValue={200}
+            defaultValue={1000}
           >
             <option value={100}>반경 100m</option>
             <option value={200}>반경 200m</option>
@@ -358,8 +360,8 @@ export default class Main extends Component {
               center={this.state.center}
               radius={this.state.radius}
               fillOpacity={0.2}
-              fillColor={"#A5E124"}
-              strokeColor={"#A5E124"}
+              fillColor={"#5DADE2"}
+              strokeColor={"#5DADE2"}
               clickable={false}
             />
             {this.state.storeDatas &&
