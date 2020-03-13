@@ -6,6 +6,7 @@ import fewIcon from "../Images/few.gif";
 import nothingIcon from "../Images/soldout2.svg";
 import loadingIcon from "../Images/loading.gif";
 import menuIcon from "../Images/menu.svg";
+import moment from "moment";
 import Select from "react-select";
 
 import {
@@ -26,6 +27,7 @@ export default class Main extends Component {
     this.naverMaps = window.naver.maps;
     this.mapRef = undefined;
     this.infoWindow = undefined;
+    this.current = moment(new Date()).format("MM월 D일 HH시");
 
     this.selectOptions = [
       { value: 100, label: "반경 100m" },
@@ -49,7 +51,7 @@ export default class Main extends Component {
         lng: 127.02757
       },
       storeDatas: [],
-      radius: 200
+      radius: 1000
     };
   }
 
@@ -89,7 +91,10 @@ export default class Main extends Component {
   };
 
   componentDidMount() {
+    this.getData();
     console.log("componentDidMount");
+    console.log(111, "qqq", this.current);
+
     this.getCurrentPosition();
   }
 
@@ -118,10 +123,13 @@ export default class Main extends Component {
           );
         },
         function(error) {
+          alert(
+            "위치 서비스를 차단해 놓으셨다면 허용하신 후 내 위치 버튼을 눌러주세요"
+          );
           console.error(error);
         },
         {
-          enableHighAccuracy: false,
+          enableHighAccuracy: true,
           maximumAge: 0,
           timeout: Infinity
         }
@@ -253,6 +261,10 @@ export default class Main extends Component {
             <option value={400}>반경 400m</option>
             <option value={500}>반경 500m</option>
             <option value={1000}>반경 1000m</option>
+            <option value={2000}>반경 2000m</option>
+            <option value={3000}>반경 3000m</option>
+            <option value={4000}>반경 4000m</option>
+            <option value={5000}>반경 5000m</option>
           </select>
           {/* sidebar_search */}
           <div className="sidebar_search">
@@ -316,7 +328,7 @@ export default class Main extends Component {
               height: "100%" // 네이버지도 세로 길이
             }}
             center={this.state.center}
-            defaultZoom={19} // 지도 초기 확대 배율
+            defaultZoom={17} // 지도 초기 확대 배율
             onClick={() => {
               if (this.infoWindow) {
                 this.infoWindow.close();
