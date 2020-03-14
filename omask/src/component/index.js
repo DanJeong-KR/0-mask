@@ -35,6 +35,7 @@ export default class Main extends Component {
     this.mapRef = undefined;
     this.infoWindow = undefined;
     this.day = this.getMaskDay();
+    this.isMobile = Number(window.innerWidth) < 500;
 
     this.selectOptions = [
       { value: 100, label: "반경 100m" },
@@ -323,7 +324,7 @@ export default class Main extends Component {
                 height: "100%" // 네이버지도 세로 길이
               }}
               center={this.state.center}
-              defaultZoom={16} // 지도 초기 확대 배율
+              defaultZoom={this.isMobile ? 15 : 16} // 지도 초기 확대 배율
               onClick={() => {
                 if (this.infoWindow) {
                   this.infoWindow.close();
