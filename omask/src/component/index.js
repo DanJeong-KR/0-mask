@@ -262,11 +262,11 @@ export default class Main extends Component {
             <option value={300}>반경 300m</option>
             <option value={400}>반경 400m</option>
             <option value={500}>반경 500m</option>
-            <option value={1000}>반경 1000m</option>
-            <option value={2000}>반경 2000m</option>
-            <option value={3000}>반경 3000m</option>
-            <option value={4000}>반경 4000m</option>
-            <option value={5000}>반경 5000m</option>
+            <option value={1000}>반경 1km</option>
+            <option value={2000}>반경 2km</option>
+            <option value={3000}>반경 3km</option>
+            <option value={4000}>반경 4km</option>
+            <option value={5000}>반경 5km</option>
           </select>
           {/* sidebar_search */}
           <div className="sidebar_search">
@@ -330,7 +330,7 @@ export default class Main extends Component {
               height: "100%" // 네이버지도 세로 길이
             }}
             center={this.state.center}
-            defaultZoom={17} // 지도 초기 확대 배율
+            defaultZoom={16} // 지도 초기 확대 배율
             onClick={() => {
               if (this.infoWindow) {
                 this.infoWindow.close();
