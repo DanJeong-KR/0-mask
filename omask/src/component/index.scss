@@ -22,7 +22,7 @@
   // 오른쪽 위
   .sidebar_markerWrapper {
     position: absolute;
-    z-index: 10;
+    z-index: 5;
     top: 50px;
     right: 0px;
 
@@ -95,7 +95,7 @@
     left: 0;
     transition: left 0.2s ease-in;
     padding: 6px;
-    height: 100vh;
+    height: 80vh;
     width: 300px;
 
     // 검색 아이콘
@@ -113,7 +113,7 @@
 
     // 다음 검색 창
     .sidebar_search {
-      height: 400px;
+      height: 100%;
       box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 0.4);
     }
 
@@ -128,7 +128,33 @@
   }
 }
 
-@media screen and (max-width: 1199px) {
+@media screen and (max-width: 600px) {
   .App {
+    // 오른쪽 위
+    .sidebar_markerWrapper {
+      right: 0px;
+      .sidebar_markers {
+        background-color: rgba($color: #fff, $alpha: 0);
+        box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 0);
+      }
+
+      .sidebar_marker {
+        font-size: 14px;
+      }
+    }
+
+    // 오른쪽 아래 내위치 버튼
+    .buttonWrapper {
+      bottom: 60px;
+      .Header-button {
+        font-size: 16px;
+      }
+    }
+
+    // 왼쪽 아래 반경 선택 버튼
+    .SelectBtn {
+      font-size: 16px;
+      bottom: 60px;
+    }
   }
 }

@@ -244,8 +244,9 @@ export default class Main extends Component {
           <div className="sidebar_search">
             <DaumPostcode
               onComplete={this.handleComplete}
-              autoResize={true}
+              // autoResize={true}
               animation={true}
+              height={"100%"}
             />
           </div>
         </div>
