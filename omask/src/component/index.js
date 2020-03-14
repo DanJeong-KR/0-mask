@@ -79,10 +79,12 @@ export default class Main extends Component {
   };
 
   componentDidMount() {
-    this.getData(this.state.isSoldoutAppear);
     console.log("componentDidMount");
-
+    this.getData(this.state.isSoldoutAppear);
     this.getCurrentPosition();
+
+    document.getElementById("APP").style.height = window.innerHeight + "px";
+    document.getElementById("MAP").style.height = window.innerHeight + "px";
   }
 
   componentDidUpdate() {
@@ -277,9 +279,9 @@ export default class Main extends Component {
 
   render() {
     return (
-      <div className="App">
+      <div id="APP" className="App">
         <div className="Header"> </div>
-        <div className="MapPart">
+        <div id="MAP" className="MapPart">
           {this.state.isLoading && (
             <div className="overlay">
               <img
