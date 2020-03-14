@@ -240,35 +240,6 @@ export default class Main extends Component {
             alt="menuIcon"
             onClick={this.onClickSidebarToggle}
           />
-          {/* sidebar_utils */}
-          <div className="buttonWrapper" onClick={this.onClickMyPositionBtn}>
-            <img src={centerIcon} width={25} alt="focus" />
-            <p className="Header-button">내 위치</p>
-          </div>
-          {/* sidebar_options */}
-          {/* <Select
-            className="Header-select"
-            value={null}
-            onChange={this.handleSelectChange}
-            options={this.options}
-            defaultValue={500}
-          /> */}
-          <select
-            className="Header-select"
-            onChange={this.handleSelectChange}
-            defaultValue={1000}
-          >
-            <option value={100}>반경 100m</option>
-            <option value={200}>반경 200m</option>
-            <option value={300}>반경 300m</option>
-            <option value={400}>반경 400m</option>
-            <option value={500}>반경 500m</option>
-            <option value={1000}>반경 1km</option>
-            <option value={2000}>반경 2km</option>
-            <option value={3000}>반경 3km</option>
-            <option value={4000}>반경 4km</option>
-            <option value={5000}>반경 5km</option>
-          </select>
           {/* sidebar_search */}
           <div className="sidebar_search">
             <DaumPostcode
@@ -277,7 +248,44 @@ export default class Main extends Component {
               animation={true}
             />
           </div>
-          {/* sidebar_markers */}
+        </div>
+        {/* <div className="mapWrapper"> */}
+
+        {/* 오른쪽 아래 반경 선택 버튼 */}
+        {/* <Select
+            className="Header-select"
+            value={null}
+            onChange={this.handleSelectChange}
+            options={this.options}
+            defaultValue={500}
+          /> */}
+        <select
+          className="SelectBtn"
+          onChange={this.handleSelectChange}
+          defaultValue={1000}
+        >
+          <option value={100}>반경 100m</option>
+          <option value={200}>반경 200m</option>
+          <option value={300}>반경 300m</option>
+          <option value={400}>반경 400m</option>
+          <option value={500}>반경 500m</option>
+          <option value={1000}>반경 1km</option>
+          <option value={2000}>반경 2km</option>
+          <option value={3000}>반경 3km</option>
+          <option value={4000}>반경 4km</option>
+          <option value={5000}>반경 5km</option>
+        </select>
+
+        {/* 왼쪽 아래 내 위치 버튼 */}
+        {/* sidebar_utils */}
+        <div className="buttonWrapper" onClick={this.onClickMyPositionBtn}>
+          <img src={centerIcon} width={25} alt="focus" />
+          <p className="Header-button">내 위치</p>
+        </div>
+
+        {/* 오른쪽 위  */}
+        {/* sidebar_markers */}
+        <div className="sidebar_markerWrapper">
           <div className="sidebar_markers">
             <div className="sidebar_title"></div>
             <div className="sidebar_marker">
@@ -302,7 +310,6 @@ export default class Main extends Component {
             </div>
           </div>
         </div>
-        {/* <div className="mapWrapper"> */}
 
         <RenderAfterNavermapsLoaded
           ncpClientId={"fs0aqkdq7k"} // 자신의 네이버 계정에서 발급받은 Client ID

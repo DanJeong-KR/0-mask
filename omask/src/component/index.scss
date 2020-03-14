@@ -19,42 +19,25 @@
     }
   }
 
-  .sidebar {
-    z-index: 10;
+  // 오른쪽 위
+  .sidebar_markerWrapper {
     position: absolute;
-    top: 0;
-    left: 0;
-    transition: left 0.2s ease-in;
-    padding: 6px;
-    height: 100vh;
-    width: 300px;
-
-    .sidebar_toggle {
-      position: absolute;
-      top: 50px;
-      right: -50px;
-      width: 36px;
-      height: 36px;
-      cursor: pointer;
-    }
-    .sidebar_toggle:hover {
-      opacity: 0.6;
-    }
-
-    .sidebar_search {
-      height: 400px;
-      box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 0.4);
-    }
+    z-index: 10;
+    top: 50px;
+    right: 0px;
 
     .sidebar_markers {
+      background-color: rgba($color: #fff, $alpha: 0);
       margin-top: 6px;
       padding: 12px 24px;
-      background-color: #fff;
-      box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 0.4);
+      box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 0.2);
     }
+
     .sidebar_marker {
       display: flex;
       margin: 6px 0;
+      font-weight: bold;
+      font-size: 18px;
       img {
         object-fit: contain;
         width: 30px;
@@ -65,46 +48,79 @@
         font-size: 14px;
       }
     }
+  }
+
+  // 오른쪽 아래 내위치 버튼
+  .buttonWrapper {
+    position: absolute;
+    border: 1px solid #22222270;
+    border-radius: 5px;
+    bottom: 30px;
+    right: 30px;
+    z-index: 10;
+    width: 100px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+
+    img {
+      margin-right: 10px;
+    }
+
+    .Header-button {
+      font-weight: bold;
+      font-size: 18px;
+    }
+  }
+
+  // 왼쪽 아래 반경 선택 버튼
+  .SelectBtn {
+    font-weight: bold;
+    font-size: 18px;
+    height: 40px;
+    width: 130px;
+    position: absolute;
+    bottom: 30px;
+    left: 30px;
+    z-index: 10;
+  }
+
+  // 검색 사이드바
+  .sidebar {
+    z-index: 10;
+    position: absolute;
+    top: 50px;
+    left: 0;
+    transition: left 0.2s ease-in;
+    padding: 6px;
+    height: 100vh;
+    width: 300px;
+
+    // 검색 아이콘
+    .sidebar_toggle {
+      position: absolute;
+      top: 20px;
+      right: -55px;
+      width: 36px;
+      height: 36px;
+      cursor: pointer;
+    }
+    .sidebar_toggle:hover {
+      opacity: 0.6;
+    }
+
+    // 다음 검색 창
+    .sidebar_search {
+      height: 400px;
+      box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 0.4);
+    }
 
     .sidebar_options {
       margin-top: 6px;
       background-color: #fff;
       box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 0.4);
-    }
-
-    .Header-select {
-      font-weight: bold;
-      font-size: 18px;
-      height: 40px;
-      width: 130px;
-      position: absolute;
-      top: 140px;
-      right: -143px;
-      z-index: 10;
-    }
-
-    .buttonWrapper {
-      position: absolute;
-      border: 1px solid #22222270;
-      border-radius: 5px;
-      top: 90px;
-      right: -115px;
-      z-index: 10;
-      width: 100px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-
-      img {
-        margin-right: 10px;
-      }
-
-      .Header-button {
-        font-weight: bold;
-        font-size: 18px;
-      }
     }
   }
   .sidebar-hide {
