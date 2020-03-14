@@ -1,8 +1,24 @@
 .App {
-  position: relative;
-  display: flex;
-  width: 100%;
-  height: 100vh;
+  min-width: 100vw;
+  min-height: 100vh;
+
+  .Header {
+    width: 100%;
+    // height: 6vh;
+    background-color: red;
+  }
+  .MapPart {
+    // position: relative;
+    display: flex;
+    width: 100%;
+    height: 100vh;
+  }
+  .Footer {
+    width: 100%;
+    height: 5vh;
+    background-color: red;
+    border: 1px solid red($color: #000000);
+  }
 
   .overlay {
     position: absolute;
@@ -19,33 +35,58 @@
     }
   }
 
+  // 왼쪽 위
+  .DailyIndicator {
+    position: absolute;
+    z-index: 5;
+    top: 10px;
+    left: 10px;
+    background-color: rgba($color: #fff, $alpha: 0.4);
+    padding: 5px 5px;
+    box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 0.2);
+
+    .DailyIndicator__ItemWrapper {
+      align-items: flex-start;
+      font-size: 16px;
+      .DailyIndicator__ItemWrapper--day {
+        margin-right: 10px;
+      }
+      .DailyIndicator__ItemWrapper--born {
+        font-weight: bold;
+      }
+    }
+  }
+
   // 오른쪽 위
   .sidebar_markerWrapper {
     position: absolute;
     z-index: 5;
-    top: 20px;
-    right: 0px;
+    top: 10px;
+    right: 10px;
 
     .sidebar_markers {
-      background-color: rgba($color: #fff, $alpha: 0);
-      margin-top: 6px;
-      padding: 12px 24px;
+      background-color: rgba($color: #fff, $alpha: 0.6);
+      padding: 5px 5px;
       box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 0.2);
     }
 
     .sidebar_marker {
       display: flex;
-      margin: 6px 0;
+      align-items: center;
       font-weight: bold;
       font-size: 18px;
       img {
         object-fit: contain;
         width: 30px;
         height: 30px;
+        margin-right: 5px;
       }
       .sidebar_marker_desc {
-        margin: 8px 12px;
         font-size: 14px;
+      }
+
+      .opa {
+        opacity: 0.4;
       }
     }
   }
@@ -132,9 +173,9 @@
   .App {
     // 오른쪽 위
     .sidebar_markerWrapper {
-      right: -20px;
+      right: 10px;
       .sidebar_markers {
-        background-color: rgba($color: #fff, $alpha: 0);
+        background-color: rgba($color: #fff, $alpha: 0.6);
         box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 0);
       }
 
@@ -145,7 +186,8 @@
 
     // 오른쪽 아래 내위치 버튼
     .buttonWrapper {
-      bottom: 60px;
+      bottom: 10px;
+      right: 10px;
       .Header-button {
         font-size: 16px;
       }
@@ -154,7 +196,8 @@
     // 왼쪽 아래 반경 선택 버튼
     .SelectBtn {
       font-size: 16px;
-      bottom: 60px;
+      bottom: 10px;
+      left: 10px;
     }
   }
 }
