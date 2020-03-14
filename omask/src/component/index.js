@@ -1,10 +1,14 @@
 import React, { Component } from "react";
-import userCenterIcon from "../Images/icon.svg";
-import centerIcon from "../Images/focus.svg";
-import goodIcon from "../Images/good.gif";
-import fewIcon from "../Images/few.gif";
-import nothingIcon from "../Images/soldout2.svg";
+
+import userCenterIcon from "../Images/userCenter.png";
+import centerIcon from "../Images/center.png";
+import goodIcon from "../Images/plenty.png";
+import someIcon from "../Images/some.png";
+import fewIcon from "../Images/few.png";
+import nothingIcon from "../Images/empty.png";
+
 import loadingIcon from "../Images/loading.gif";
+
 import menuIcon from "../Images/menu.svg";
 import searchIcon from "../Images/search.svg";
 
@@ -328,7 +332,7 @@ export default class Main extends Component {
             >
               <Marker
                 position={this.state.userCenter}
-                clickable={false}
+                clickable={true}
                 icon={userCenterIcon}
                 zIndex={10}
                 onClick={() => {
@@ -471,11 +475,21 @@ export default class Main extends Component {
               <div className="sidebar_title"></div>
               <div className="sidebar_marker">
                 <img src={goodIcon} alt="good" />
-                <p className="sidebar_marker_desc">30+</p>
+                <p className="sidebar_marker_desc" style={{ color: "red" }}>
+                  100+
+                </p>
+              </div>
+              <div className="sidebar_marker">
+                <img src={someIcon} alt="few" />
+                <p className="sidebar_marker_desc" style={{ color: "#F08D07" }}>
+                  30+
+                </p>
               </div>
               <div className="sidebar_marker">
                 <img src={fewIcon} alt="few" />
-                <p className="sidebar_marker_desc">2+</p>
+                <p className="sidebar_marker_desc" style={{ color: "green" }}>
+                  2+
+                </p>
               </div>
               <div className="sidebar_marker">
                 {/* <img className="opa" src={nothingIcon} alt="nothingIcon" />
@@ -484,8 +498,17 @@ export default class Main extends Component {
                   wit
                   onChange={this.onClickSoldout}
                   checked={this.state.isSoldoutAppear}
-                  onColor="#5DADE2"
-                  checkedIcon={<img src={nothingIcon} alt="nothingIcon" />}
+                  onColor="#79CDF0"
+                  checkedIcon={
+                    <img
+                      src={nothingIcon}
+                      alt="nothingIcon"
+                      style={{
+                        paddingTop: "4px",
+                        height: "20px"
+                      }}
+                    />
+                  }
                   width={70}
                   height={30}
                 />
