@@ -232,6 +232,7 @@ export default class Main extends Component {
             <img className="loadingIcon" src={loadingIcon} alt="loadingIcon" />
           </div>
         )}
+
         <div id="sidebar" className="sidebar sidebar-hide">
           <img
             className="sidebar_toggle"
