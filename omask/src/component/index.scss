@@ -204,6 +204,13 @@
 
 @media screen and (max-width: 600px) {
   .App {
+    // 왼쪽 위
+    .Dan {
+      left: 20px;
+    }
+    .DailyIndicator {
+      font-size: 12px;
+    }
     // 오른쪽 위
     .sidebar_markerWrapper {
       right: 10px;
