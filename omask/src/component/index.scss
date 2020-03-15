@@ -72,12 +72,13 @@
     z-index: 5;
     top: 10px;
     right: 10px;
+    border-radius: 10px;
 
     .sidebar_markers {
       background-color: rgba($color: #fff, $alpha: 0.6);
-      border-radius: 10px;
       padding: 5px 5px;
       box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
     }
 
     .sidebar_marker {

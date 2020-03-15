@@ -2,9 +2,13 @@ import React, { Component } from "react";
 
 import userCenterIcon from "../Images/userCenter.png";
 import centerIcon from "../Images/center.png";
+
 import plentyIcon from "../Images/plenty.png";
+import plentyAniIcon from "../Images/plentyAni.png";
 import someIcon from "../Images/some.png";
+import someAniIcon from "../Images/someAni.png";
 import fewIcon from "../Images/few.png";
+import fewAniIcon from "../Images/fewAni.png";
 import emptyIcon from "../Images/empty.png";
 
 import loadingIcon from "../Images/loading.gif";
@@ -367,15 +371,15 @@ export default class Main extends Component {
                       remain = "품절";
                       break;
                     case "few":
-                      icon = fewIcon;
+                      icon = fewAniIcon;
                       remain = "30개 미만! 방문 하셔도 품절일 수 있습니다.";
                       break;
                     case "some":
-                      icon = someIcon;
+                      icon = someAniIcon;
                       remain = "30개 이상! 방문하시는 것을 추천드립니다.";
                       break;
                     case "plenty":
-                      icon = plentyIcon;
+                      icon = plentyAniIcon;
                       remain = "100개 이상! 방문하시는 것을 추천드립니다";
                       break;
                     default:
@@ -407,6 +411,7 @@ export default class Main extends Component {
                               }
                             : undefined
                         }
+                        zIndex={element.remain_stat !== "empty" ? 3 : 0}
                       />
                     </div>
                   );
@@ -512,12 +517,15 @@ export default class Main extends Component {
                       src={emptyIcon}
                       alt="emptyIcon"
                       style={{
-                        paddingTop: "4px",
-                        height: "20px"
+                        objectFit: "fill",
+                        paddingTop: "3px",
+                        paddingLeft: "7px",
+                        height: "23px",
+                        width: "19px"
                       }}
                     />
                   }
-                  width={70}
+                  width={60}
                   height={30}
                 />
               </div>
