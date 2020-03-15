@@ -2,18 +2,16 @@ import React, { Component } from "react";
 
 import userCenterIcon from "../Images/userCenter.png";
 import centerIcon from "../Images/center.png";
-import goodIcon from "../Images/plenty.png";
+import plentyIcon from "../Images/plenty.png";
 import someIcon from "../Images/some.png";
 import fewIcon from "../Images/few.png";
-import nothingIcon from "../Images/empty.png";
+import emptyIcon from "../Images/empty.png";
 
 import loadingIcon from "../Images/loading.gif";
 
-import menuIcon from "../Images/menu.svg";
 import searchIcon from "../Images/search.svg";
 
 import moment from "moment";
-import Select from "react-select";
 import Switch from "react-switch";
 
 import {
@@ -36,15 +34,6 @@ export default class Main extends Component {
     this.infoWindow = undefined;
     this.day = this.getMaskDay();
     this.isMobile = Number(window.innerWidth) < 500;
-
-    this.selectOptions = [
-      { value: 100, label: "반경 100m" },
-      { value: 200, label: "반경 200m" },
-      { value: 300, label: "반경 300m" },
-      { value: 400, label: "반경 400m" },
-      { value: 500, label: "반경 500m" },
-      { value: 1000, label: "반경 1000m" }
-    ];
 
     this.state = {
       isLoading: false,
@@ -117,7 +106,10 @@ export default class Main extends Component {
           } else {
             if (isSoldoutAppear) {
               this.setState({
-                storeDatas: json.stores,
+                storeDatas: json.stores.filter(element => {
+                  const remain = element.remain_stat;
+                  return remain !== "break";
+                }),
                 isLoading: false
               });
             } else {
@@ -125,7 +117,10 @@ export default class Main extends Component {
                 storeDatas: json.stores.filter(element => {
                   const remain = element.remain_stat;
                   return (
-                    remain === "few" || remain === "some" || remain === "plenty"
+                    remain !== "break" &&
+                    (remain === "few" ||
+                      remain === "some" ||
+                      remain === "plenty")
                   );
                 }),
                 isLoading: false
@@ -202,6 +197,8 @@ export default class Main extends Component {
   };
 
   handleSelectChange = e => {
+    console.log(111, { e });
+
     this.setState(
       {
         radius: e.target.value
@@ -332,6 +329,7 @@ export default class Main extends Component {
               }}
             >
               <Marker
+                title="현재위치"
                 position={this.state.userCenter}
                 clickable={true}
                 icon={userCenterIcon}
@@ -344,10 +342,10 @@ export default class Main extends Component {
               {stringify(this.state.center) !==
                 stringify(this.state.userCenter) && (
                 <Marker
+                  title="기준위치"
                   position={this.state.center}
                   clickable={false}
                   icon={centerIcon}
-                  animation={this.naverMaps.Animation.BOUNCE}
                 />
               )}
               <Circle
@@ -365,7 +363,7 @@ export default class Main extends Component {
                   let remain;
                   switch (remain_stat) {
                     case "empty":
-                      icon = nothingIcon;
+                      icon = emptyIcon;
                       remain = "품절";
                       break;
                     case "few":
@@ -373,12 +371,15 @@ export default class Main extends Component {
                       remain = "30개 미만! 방문 하셔도 품절일 수 있습니다.";
                       break;
                     case "some":
+                      icon = someIcon;
+                      remain = "30개 이상! 방문하시는 것을 추천드립니다.";
+                      break;
                     case "plenty":
-                      icon = goodIcon;
-                      remain = "30개 이상! 방문하시는 것을 추천드립니다";
+                      icon = plentyIcon;
+                      remain = "100개 이상! 방문하시는 것을 추천드립니다";
                       break;
                     default:
-                      icon = nothingIcon;
+                      icon = emptyIcon;
                       remain = "품절";
                       break;
                   }
@@ -396,7 +397,11 @@ export default class Main extends Component {
                           remain_stat !== "empty"
                             ? () => {
                                 alert(
-                                  `마스크 재고 : ${remain}\n약국 이름 : ${element.name}\n주소 : ${element.addr}`
+                                  `마스크 재고 : ${remain}\n입고시간 : ${moment(
+                                    element.stock_at
+                                  ).format("M월 D일 HH시 MM분")}\n약국 이름 : ${
+                                    element.name
+                                  }\n주소 : ${element.addr}`
                                 );
                                 // this.handleMarker(element);
                               }
@@ -429,34 +434,30 @@ export default class Main extends Component {
           {/* <div className="mapWrapper"> */}
 
           {/* 오른쪽 아래 반경 선택 버튼 */}
-          {/* <Select
-            className="Header-select"
-            value={null}
-            onChange={this.handleSelectChange}
-            options={this.options}
-            defaultValue={500}
-          /> */}
-          <select
-            className="SelectBtn"
-            onChange={this.handleSelectChange}
-            defaultValue={1000}
-          >
-            <option value={100}>반경 100m</option>
-            <option value={200}>반경 200m</option>
-            <option value={300}>반경 300m</option>
-            <option value={400}>반경 400m</option>
-            <option value={500}>반경 500m</option>
-            <option value={1000}>반경 1km</option>
-            <option value={2000}>반경 2km</option>
-            <option value={3000}>반경 3km</option>
-            <option value={4000}>반경 4km</option>
-            <option value={5000}>반경 5km</option>
-          </select>
+          <div className="SelectWrapper">
+            <select
+              className="SelectBtn"
+              onChange={this.handleSelectChange}
+              defaultValue={1000}
+            >
+              <option value={100}>반경 100m </option>
+              <option value={200}>반경 200m </option>
+              <option value={300}>반경 300m </option>
+              <option value={400}>반경 400m </option>
+              <option value={500}>반경 500m </option>
+              <option value={1000}>반경 1km </option>
+              <option value={2000}>반경 2km</option>
+              <option value={3000}>반경 3km</option>
+              <option value={4000}>반경 4km</option>
+              <option value={5000}>반경 5km</option>
+            </select>
+            <p>▼</p>
+          </div>
 
           {/* 왼쪽 아래 내 위치 버튼 */}
           {/* sidebar_utils */}
           <div className="buttonWrapper" onClick={this.onClickMyPositionBtn}>
-            <img src={centerIcon} width={25} alt="focus" />
+            <img src={userCenterIcon} width={25} alt="focus" />
             <p className="Header-button">내 위치</p>
           </div>
 
@@ -465,7 +466,13 @@ export default class Main extends Component {
           <div className="DailyIndicator">
             <div className="DailyIndicator__ItemWrapper">
               <p className="DailyIndicator__ItemWrapper--day">{this.day[0]}</p>
-              <p className="DailyIndicator__ItemWrapper--born">{this.day[1]}</p>
+
+              <div className="DailyIndicator__ItemWrapper--info">
+                <p>끝 자리</p>
+                <p className="DailyIndicator__ItemWrapper--born">
+                  {this.day[1]}
+                </p>
+              </div>
             </div>
           </div>
 
@@ -475,8 +482,8 @@ export default class Main extends Component {
             <div className="sidebar_markers">
               <div className="sidebar_title"></div>
               <div className="sidebar_marker">
-                <img src={goodIcon} alt="good" />
-                <p className="sidebar_marker_desc" style={{ color: "red" }}>
+                <img src={plentyIcon} alt="good" />
+                <p className="sidebar_marker_desc" style={{ color: "green" }}>
                   100+
                 </p>
               </div>
@@ -488,12 +495,12 @@ export default class Main extends Component {
               </div>
               <div className="sidebar_marker">
                 <img src={fewIcon} alt="few" />
-                <p className="sidebar_marker_desc" style={{ color: "green" }}>
+                <p className="sidebar_marker_desc" style={{ color: "red" }}>
                   2+
                 </p>
               </div>
               <div className="sidebar_marker">
-                {/* <img className="opa" src={nothingIcon} alt="nothingIcon" />
+                {/* <img className="opa" src={emptyIcon} alt="emptyIcon" />
                 <p className="sidebar_marker_desc">0</p> */}
                 <Switch
                   wit
@@ -502,8 +509,8 @@ export default class Main extends Component {
                   onColor="#79CDF0"
                   checkedIcon={
                     <img
-                      src={nothingIcon}
-                      alt="nothingIcon"
+                      src={emptyIcon}
+                      alt="emptyIcon"
                       style={{
                         paddingTop: "4px",
                         height: "20px"
@@ -514,14 +521,6 @@ export default class Main extends Component {
                   height={30}
                 />
               </div>
-              {/* <div className="sidebar_marker">
-                <img src={userCenterIcon} alt="userCenterIcon" />
-                <p className="sidebar_marker_desc">현재위치</p>
-              </div>
-              <div className="sidebar_marker">
-                <img src={centerIcon} alt="centerIcon" />
-                <p className="sidebar_marker_desc">기준 위치 (반경)</p>
-              </div> */}
             </div>
           </div>
         </div>
