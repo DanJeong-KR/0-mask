@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 
+import danIcon from "../Images/dan.png";
 import userCenterIcon from "../Images/userCenter.png";
 import centerIcon from "../Images/center.png";
 
@@ -61,15 +62,15 @@ export default class Main extends Component {
     const day = moment(new Date()).format("dddd");
     switch (day) {
       case "Monday":
-        return ["월", "1, 6"];
+        return ["월요일", "1, 6"];
       case "Tuesday":
-        return ["화", "2, 7"];
+        return ["화요일", "2, 7"];
       case "Wednesday":
-        return ["수", "3, 8"];
+        return ["수요일", "3, 8"];
       case "Thursday":
-        return ["목", "4, 9"];
+        return ["목요일", "4, 9"];
       case "Friday":
-        return ["금", "0, 5"];
+        return ["금요일", "0, 5"];
       case "Saturday":
       case "Sunday":
         return ["주말", "모든국민"];
@@ -467,6 +468,16 @@ export default class Main extends Component {
           </div>
 
           {/* 왼쪽 위  */}
+          <img
+            className="Dan"
+            src={danIcon}
+            alt="dan"
+            onClick={() => {
+              alert(
+                "개발자 : 정창식\nemail: a920506@gmail.com\n\n디자인: 조비아\nYoutube: 조비아 JOVIA\n\n사용하시는 데 문제가 있다면 언제든 메일 보내주시면 수정하겠습니다.\n♥︎ >.< ♥︎ \n"
+              );
+            }}
+          />
           {/* sidebar_markers */}
           <div className="DailyIndicator">
             <div className="DailyIndicator__ItemWrapper">

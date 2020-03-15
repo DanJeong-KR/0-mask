@@ -38,10 +38,18 @@
   }
 
   // 왼쪽 위
-  .DailyIndicator {
+
+  .Dan {
     position: absolute;
     z-index: 5;
     top: 10px;
+    left: 25px;
+    cursor: pointer;
+  }
+  .DailyIndicator {
+    position: absolute;
+    z-index: 5;
+    top: 60px;
     left: 10px;
     background-color: rgba($color: #79cdf0, $alpha: 0.6);
     border-radius: 10px;
